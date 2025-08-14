@@ -47,6 +47,7 @@ const Payment = () => {
   const [selectedGiftCard, setSelectedGiftCard] = useState("amazon");
   const [selectedAmount, setSelectedAmount] = useState("50");
   const [uploadProof, setUploadProof] = useState(null);
+  const [selectedCrypto, setSelectedCrypto] = useState('')
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -98,11 +99,53 @@ const Payment = () => {
     navigate("/booking-confirmation", { state: paymentData });
   };
 
+  const handlePaymentForCryptoMethod = async(selectedCrypto) => {
+    if (!selectedCrypto) {
+      toast({ title: "Error", description: "Please select a cryptocurrency.", variant: "destructive" });
+      return;
+    }
+
+    // Prepare data for payment submission
+    const paymentData = {
+      userId: user?.id,
+      selectedCrypto,
+      amountCents,
+      tier,
+      celeb,
+      appearance,
+      shoutout,
+      VIP,
+      custom,
+      date,
+      method,
+      vacation,
+      podcast,
+      keynote,
+      charity,
+      secret,
+      hospital,
+      birthday,
+      tour,
+      brand,
+      award,
+      comedy
+    };
+
+    navigate("/booking-confirmation", { state: paymentData });
+  };
+
   // validate all input fields
   const validateFields = () => {
-    if (!giftCardCode || !selectedGiftCard || !selectedAmount || !uploadProof) {
-      setErrorMessage("All fields are required.");
-      return false;
+    if (method === "gift") {
+      if (!giftCardCode || !selectedGiftCard || !selectedAmount || !uploadProof) {
+        setErrorMessage("All fields are required.");
+        return false;
+      }
+    } else if (method === "crypto") {
+      if (!selectedCrypto) {
+        setErrorMessage("Please select a cryptocurrency.");
+        return false;
+      }
     }
 
     // Additional validation logic can be added here
@@ -111,6 +154,9 @@ const Payment = () => {
     return true;
   };
 
+  const allowedMethods = ["gift", "crypto"];
+  const showOnly = allowedMethods.includes(method) ? method : null;
+
   return (
     <div className="container mx-auto px-4 py-10">
       <SEO title="Payment — Celebrity Experience" description="Submit your payment information securely (UI only)." />
@@ -118,9 +164,9 @@ const Payment = () => {
 
       <Tabs defaultValue={defaultTab} className="w-full">
         <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-          <TabsTrigger value="gift">Gift Card</TabsTrigger>
-          {/* <TabsTrigger value="crypto">Crypto</TabsTrigger>
-          <TabsTrigger value="paypal">PayPal</TabsTrigger>
+          {(!showOnly || showOnly === "gift") && <TabsTrigger value="gift">Gift Card</TabsTrigger>}
+          {(!showOnly || showOnly === "crypto") && <TabsTrigger value="crypto">Crypto</TabsTrigger>}
+          {/* <TabsTrigger value="paypal">PayPal</TabsTrigger>
           <TabsTrigger value="cashapp">CashApp</TabsTrigger>
           <TabsTrigger value="venmo">Venmo</TabsTrigger>
           <TabsTrigger value="zelle">Zelle</TabsTrigger>
@@ -129,7 +175,9 @@ const Payment = () => {
           <TabsTrigger value="wu">Western Union</TabsTrigger> */}
         </TabsList>
 
-        <TabsContent value="gift"><Method>
+
+        {(!showOnly || showOnly === "gift") && (
+          <TabsContent value="gift"><Method>
           <div className="grid gap-2">
             <Label>Gift Card Code</Label>
             <Input onChange={(e) => setGiftCardCode(e.target.value)} placeholder="XXXX-XXXX-XXXX" />
@@ -168,15 +216,33 @@ const Payment = () => {
             </Select>
           </div>
           <div className="grid gap-2"><Label>Upload Proof</Label><Input type="file" onChange={(e) => setUploadProof(e.target.files[0])} /></div>
-        </Method></TabsContent>
+          </Method></TabsContent>
+        )}
 
-        <TabsContent value="crypto"><Method>
-          <div className="grid gap-2"><Label>Wallet Address</Label><Input placeholder="0x... or network address" /></div>
-          <div className="grid gap-2"><Label>Tx Hash</Label><Input placeholder="Transaction hash" /></div>
-          <div className="grid gap-2"><Label>Upload Proof</Label><Input type="file" /></div>
-        </Method></TabsContent>
+        {(!showOnly || showOnly === "crypto") && (
+          <TabsContent value="crypto"><Method>
+          <div className="grid gap-2">
+            <Label>Select Crypto Currency</Label>
+            <Select defaultValue="bitcoin" onValueChange={(value) => setSelectedCrypto(value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select cryptocurrency" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="bitcoin">Bitcoin (BTC)</SelectItem>
+                <SelectItem value="ethereum">Ethereum (ETH)</SelectItem>
+                <SelectItem value="litecoin">Litecoin (LTC)</SelectItem>
+                <SelectItem value="ripple">Ripple (XRP)</SelectItem>
+                <SelectItem value="dogecoin">Dogecoin (DOGE)</SelectItem>
+                <SelectItem value="solana">Solana (SOL)</SelectItem>
+                <SelectItem value="cardano">Cardano (ADA)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-        <TabsContent value="paypal"><Method>
+          </Method></TabsContent>
+        )}
+
+        {/* <TabsContent value="paypal"><Method>
           <div className="grid gap-2"><Label>PayPal Email</Label><Input type="email" /></div>
           <div className="grid gap-2"><Label>Upload Proof</Label><Input type="file" /></div>
         </Method></TabsContent>
@@ -218,7 +284,7 @@ const Payment = () => {
           <div className="grid gap-2"><Label>MTCN</Label><Input /></div>
           <div className="grid gap-2"><Label>Pickup or Bank</Label><Input /></div>
           <div className="grid gap-2"><Label>Upload Proof</Label><Input type="file" /></div>
-        </Method></TabsContent>
+        </Method></TabsContent> */}
       </Tabs>
 
       <Button
@@ -227,6 +293,8 @@ const Payment = () => {
           e.preventDefault();
           if (method === "gift") {
             await handlePaymentForGiftMethod();
+          } else if (method === "crypto") {
+            await handlePaymentForCryptoMethod(selectedCrypto);
           } else {
             // Handle other payment methods here
             toast({ title: "Payment Method", description: "This feature is under development.", variant: "info" });

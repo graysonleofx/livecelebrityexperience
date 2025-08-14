@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import supabase from "@/lib/supabaseClient"; // Ensure you have the Supabase client set up
 import {useToast} from "@/hooks/use-toast"; // Custom hook for toast notifications
-import Payment from "../pages/Payment";
 
 const BookingModal = ({ open, onOpenChange, celeb }) => {
   const navigate = useNavigate();
@@ -90,9 +89,16 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
     { id: "Fashion Show Appearance", label: "Fashion Show Appearance", price: 30000 }, // $300.00
     { id: "Merchandise Bundle", label: "Merchandise Bundle", price: 15000 }, // $150.00
     { id: "Fan Card Membership", label: "Fan Card Membership", price: 5000 }, // $50.00
+    { id: "Concert Booking", label: "Concert", price: 20000 }, // $200.00
     { id: "Custom Request", label: "Custom Request", price: 0 }, // Contact for pricing
   ];
   const [tier, setTier] = useState("Meet & Greet");
+  const [concertTitle, setConcertTitle] = useState("");
+  const [concertDescription, setConcertDescription] = useState("");
+  const [concertLocation, setConcertLocation] = useState("");
+  const [concertAudience, setConcertAudience] = useState("");
+  const [concertTicketLink, setConcertTicketLink] = useState("");
+  const [concertBudget, setConcertBudget] = useState("");
   const [appearance, setAppearance] = useState("Appearance");
   const [shoutout, setShoutout] = useState("Video Shoutout");
   const [VIP, setVIP] = useState("VIP Experience");
@@ -108,6 +114,7 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
   const [brand, setBrand] = useState("Brand Endorsement");
   const [award, setAward] = useState("Award Ceremony Appearance");
   const [comedy, setComedy] = useState("Comedy Show Appearance");
+  const [concert, setConcert] = useState("Concert Booking")
   const [sports, setSports] = useState("Sports Event Appearance");
   const [fashion, setFashion] = useState("Fashion Show Appearance");
   const [merch, setMerch] = useState("Merchandise Bundle");
@@ -161,17 +168,54 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
           className="grid gap-4"
           onSubmit={(e) => {
             e.preventDefault();
+            const bookingData = {
+              celeb, 
+                tier, 
+                appearance,
+                shoutout, 
+                VIP, 
+                custom, 
+                date, 
+                method, 
+                vacation, 
+                podcast, 
+                keynote, 
+                charity, 
+                secret, 
+                hospital, 
+                birthday, 
+                tour, 
+                brand, 
+                award, 
+                comedy ,
+                ...(tier === "concert" && {
+                  title: concertTitle,
+                  description: concertDescription,
+                  location: concertLocation,
+                  audience: concertAudience,
+                  ticketLink: concertTicketLink,
+                  budget: concertBudget
+                }),
+                fan,
+                merch,
+                sports,
+                fashion
+            }
             // Handle booking logic here
-            if (method === "gift") {
-              navigate("/payment", { state: { celeb, tier, appearance, shoutout, VIP, custom, date, method, vacation, podcast, keynote, charity, secret, hospital, birthday, tour, brand, award, comedy } });
-            } else if (method === "paypal" || method === "cashapp" || method === "venmo" || method === "crypto" || method === "wire" || method === "mg" || method === "wu") {
+            if (method === "gift" || method === "crypto") {
+                navigate("/payment", { state: 
+                { 
+                  bookingData
+                }});
+              
+            } else if (method === "paypal" || method === "cashapp" || method === "venmo" || method === "wire" || method === "mg" || method === "wu") {
               // Handle other payment methods just submit
               handleBooking().then(() => {
                 if (loading) {
                   toast({ title: "Booking in progress", description: `Booking ${celeb?.name}...`, status: "info" });
                 } else {
                   onOpenChange(false); // Close the modal after booking
-                  navigate("/booking-confirmation", { state: { celeb, tier, appearance, shoutout, VIP, custom, date, method, vacation, podcast, keynote, charity, secret, hospital, birthday, tour, brand, award, comedy } });
+                  navigate("/booking-confirmation", { state:{ bookingData }});
                   toast({ title: "Booking successful!", description: `You have successfully booked ${celeb?.name}.`, status: "success" });
                 }
               });
@@ -182,8 +226,8 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
                 toast({ title: "Booking in progress", description: `Booking ${celeb?.name}...`, status: "info" });
               } else {
                 onOpenChange(false); // Close the modal after booking
-                navigate("/booking-confirmation", { state: { celeb, tier, appearance, shoutout, VIP, custom, date, method, vacation, podcast, keynote, charity, secret, hospital, birthday, tour, brand, award, comedy } });
-                toast({ title: "Booking successful!", description: `You have successfully booked ${celeb?.name}.`, status: "success" });
+                navigate("/booking-confirmation", { state: { bookingData } });
+                  toast({ title: "Booking successful!", description: `You have successfully booked ${celeb?.name}.`, status: "success" });
               }
             });
             }
@@ -191,11 +235,12 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
         >
           <div className="grid gap-2">
             <Label>Booking Type</Label>
-            <Select defaultValue="meet">
+            <Select defaultValue="meet" value={tier} onValueChange={setTier}>
               <SelectTrigger>
                 <SelectValue placeholder="Select type" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="concert">Concert Booking ${TIERS.find((t) => t.id === concert)?.price ?? 0}</SelectItem>
                 <SelectItem value="meet">Meet & Greet (In-Person) ${TIERS.find((t) => t.id === tier)?.price ?? 0}</SelectItem>
                 <SelectItem value="shoutout">Video Shoutout (Personalized) ${TIERS.find((t) => t.id === shoutout)?.price ?? 0}</SelectItem>
                 <SelectItem value="appearance">Appearance (Virtual) ${TIERS.find((t) => t.id === appearance)?.price ?? 0}</SelectItem>
@@ -212,10 +257,43 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
                 <SelectItem value="brand">Brand Partnership (In-Person) ${TIERS.find((t) => t.id === brand)?.price ?? 0}</SelectItem>
                 <SelectItem value="award">Award Show Appearance (In-Person) ${TIERS.find((t) => t.id === award)?.price ?? 0}</SelectItem>
                 <SelectItem value="comedy">Comedy Show Appearance (In-Person) ${TIERS.find((t) => t.id === comedy)?.price ?? 0}</SelectItem>
+                <SelectItem value="sports">Sports Event Appearance (In-Person) ${TIERS.find((t) => t.id === sports)?.price ?? 0}</SelectItem>
+                <SelectItem value="fan">Fan Membership Card ${TIERS.find((t) => t.id === fan)?.price ?? 0}</SelectItem>
+                <SelectItem value="merch">Merchandise Bundle (Shipping Included) ${TIERS.find((t) => t.id === merch)?.price ?? 0}</SelectItem>
                 <SelectItem value="custom">Custom Request (Contact Us)</SelectItem>
               </SelectContent>
             </Select>
           </div>
+
+          {/* Concert specific fields */}
+          {tier === "concert" && (
+            <div className="grid gap-3 border rounded-md p-3">
+              <div className="grid gap-2">
+                <Label required>Concert Title</Label>
+                <Input value={concertTitle} onChange={e => setConcertTitle(e.target.value)} required />
+              </div>
+              <div className="grid gap-2">
+                <Label required>Concert Description</Label>
+                <Textarea value={concertDescription} onChange={e => setConcertDescription(e.target.value)} required rows={2} />
+              </div>
+              <div className="grid gap-2">
+                <Label required>Concert Location</Label>
+                <Input value={concertLocation} onChange={e => setConcertLocation(e.target.value)} required />
+              </div>
+              <div className="grid gap-2">
+                <Label>Expected Audience Size (optional)</Label>
+                <Input value={concertAudience} onChange={e => setConcertAudience(e.target.value)} type="number" min="0" />
+              </div>
+              <div className="grid gap-2">
+                <Label>Ticket Link (optional)</Label>
+                <Input value={concertTicketLink} onChange={e => setConcertTicketLink(e.target.value)} type="url" />
+              </div>
+              <div className="grid gap-2">
+                <Label>Budget/Offer (optional)</Label>
+                <Input value={concertBudget} onChange={e => setConcertBudget(e.target.value)} />
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="grid gap-2"><Label>Name</Label><Input required /></div>

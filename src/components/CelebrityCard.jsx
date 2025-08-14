@@ -1,7 +1,7 @@
 import { Star, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-// import { Celebrity } from "@/data/celebrities";
+import supabase from "@/lib/supabaseClient";
 
 const CelebrityCard = ({ celeb, onBook, onDonate }) => {
   const stars = Array.from({ length: 5 }, (_, i) => i < Math.round(celeb.rating));

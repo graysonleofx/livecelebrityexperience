@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "@/lib/supabaseClient"; // Ensure you have the Supabase client set up
+import { use } from "react";
 
 
 const DonationModal = ({ open, onOpenChange, celeb }) => {
@@ -16,6 +17,11 @@ const DonationModal = ({ open, onOpenChange, celeb }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [user, setUser] = useState(null);
+  const [cryptoCurrency, setCryptoCurrency] = useState("Bitcoin");
+  const [giftCardCode, setGiftCardCode] = useState("");
+  const [selectedGiftCard, setSelectedGiftCard] = useState("");
+  const [giftCardAmount, setGiftCardAmount] = useState("");
+  const [uploadGiftCardImage, setUploadGiftCardImage] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,7 +46,10 @@ const DonationModal = ({ open, onOpenChange, celeb }) => {
     } else if (isNaN(amount) || amount <= 0) {
       toast({ title: "Error", description: "Please enter a valid donation amount.", variant: "destructive" });
       return;
-    } 
+    } else if (paymentMethod === "crypto" && !cryptoCurrency){
+      toast({ title: "Error", description: "Please select a cryptocurrency.", variant: "destructive" });
+      return;
+    }
     // Here you would handle the donation logic, e.g. show success
     toast({ title: "Donation Successful", description: `Thank you for your donation of $${amount} to ${celeb?.name}! Check your email for confirmation.`, variant: "default" });
     onOpenChange(false);
@@ -59,7 +68,10 @@ const DonationModal = ({ open, onOpenChange, celeb }) => {
             await handleSubmit();
           }}
         >
-          <div className="grid gap-2"><Label>Amount</Label><Input type="number" min={1} step={1} value={amount} onChange={(e) => setAmount(e.target.value)} required /></div>
+          <div className="grid gap-2">
+            <Label>Amount</Label>
+            <Input type="number" min={1} step={1} value={amount} onChange={(e) => setAmount(e.target.value)} required />
+          </div>
           <div className="grid gap-2">
             <Label>Payment Method</Label>
             <Select defaultValue="paypal" onValueChange={setPaymentMethod}>
@@ -74,6 +86,30 @@ const DonationModal = ({ open, onOpenChange, celeb }) => {
               </SelectContent>
             </Select>
           </div>
+          {paymentMethod === "crypto" && (
+            <div className="grid gap-2">
+              <Label>Cryptocurrency</Label>
+              <Select defaultValue={cryptoCurrency} onValueChange={setCryptoCurrency} required>
+                <SelectTrigger><SelectValue placeholder="Select cryptocurrency" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Bitcoin">Bitcoin</SelectItem>
+                  <SelectItem value="Ethereum">Ethereum</SelectItem>
+                  <SelectItem value="Litecoin">Litecoin</SelectItem>
+                  <SelectItem value="Ripple">Ripple</SelectItem>
+                  <SelectItem value="Bitcoin Cash">Bitcoin Cash</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+          {paymentMethod === "gift" && (
+            <div className="grid gap-2">
+              <Label>Enter Gift Card Details</Label>
+              <Input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value)} placeholder="Enter gift card code" required />
+              <Input value={selectedGiftCard} onChange={(e) => setSelectedGiftCard(e.target.value)} placeholder="Enter selected gift card"  required/>
+              <Input type="number" min={1} step={1} value={giftCardAmount} onChange={(e) => setGiftCardAmount(e.target.value)} placeholder="Enter gift card amount" required />
+              <Input type="file" accept="image/*" onChange={(e) => setUploadGiftCardImage(e.target.files[0])} required />
+            </div>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="grid gap-2"><Label>Name</Label><Input value={name} onChange={(e) => setName(e.target.value)} required /></div>
             <div className="grid gap-2"><Label>Email</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>

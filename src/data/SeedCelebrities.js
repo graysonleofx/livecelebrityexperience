@@ -11,24 +11,156 @@ export default function SeedCelebrities() {
         .insert([
           {
             name: "John Doe",
-            photo: "https://via.placeholder.com/150",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
             description: "An amazing celebrity known for his incredible talent.",
             category: "Actor",
             price: 1000,
+            rating: 4.5,
+            availability: true
           },
           {
-            name: "Jane Smith",
-            photo: "https://via.placeholder.com/150",
+            name: "Hamdan bin Mohammed Al Maktoum",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/licensed-image.webp",
             description: "A renowned singer with a powerful voice.",
-            category: "Singer",
+            category: "",
             price: 1500,
+            rating: 4.8,
+            availability: true
           },
           {
-            name: "Mike Johnson",
-            photo: "https://via.placeholder.com/150",
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
             description: "A popular influencer with millions of followers.",
             category: "Influencer",
             price: 2000,
+            rating: 4.2,
+            availability: true
+          },
+          {
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
+            description: "A popular influencer with millions of followers.",
+            category: "Influencer",
+            price: 2000,
+            rating: 4.2,
+            availability: true
+          },
+          {
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
+            description: "A popular influencer with millions of followers.",
+            category: "Influencer",
+            price: 2000,
+            rating: 4.2,
+            availability: true
+          },
+          {
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
+            description: "A popular influencer with millions of followers.",
+            category: "Influencer",
+            price: 2000,
+            rating: 4.2,
+            availability: true
+          },
+          {
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
+            description: "A popular influencer with millions of followers.",
+            category: "Influencer",
+            price: 2000,
+            rating: 4.2,
+            availability: true
+          },
+          {
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
+            description: "A popular influencer with millions of followers.",
+            category: "Influencer",
+            price: 2000,
+            rating: 4.2,
+            availability: true
+          },
+          {
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
+            description: "A popular influencer with millions of followers.",
+            category: "Influencer",
+            price: 2000,
+            rating: 4.2,
+            availability: true
+          },
+          {
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
+            description: "A popular influencer with millions of followers.",
+            category: "Influencer",
+            price: 2000,
+            rating: 4.2,
+            availability: true
+          },
+          {
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
+            description: "A popular influencer with millions of followers.",
+            category: "Influencer",
+            price: 2000,
+            rating: 4.2,
+            availability: true
+          },
+          {
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
+            description: "A popular influencer with millions of followers.",
+            category: "Influencer",
+            price: 2000,
+            rating: 4.2,
+            availability: true
+          },
+          {
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
+            description: "A popular influencer with millions of followers.",
+            category: "Influencer",
+            price: 2000,
+            rating: 4.2,
+            availability: true
+          },
+          {
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
+            description: "A popular influencer with millions of followers.",
+            category: "Influencer",
+            price: 2000,
+            rating: 4.2,
+            availability: true
+          },
+          {
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
+            description: "A popular influencer with millions of followers.",
+            category: "Influencer",
+            price: 2000,
+            rating: 4.2,
+            availability: true
+          },
+          {
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
+            description: "A popular influencer with millions of followers.",
+            category: "Influencer",
+            price: 2000,
+            rating: 4.2,
+            availability: true
+          },
+          {
+            name: "Jessica Marie Alba",
+            photo: "https://web.bookastarlive.online/wp-content/uploads/2025/08/OIP.webp",
+            description: "A popular influencer with millions of followers.",
+            category: "Influencer",
+            price: 2000,
+            rating: 4.2,
+            availability: true
           },
         ]);
 

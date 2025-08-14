@@ -39,7 +39,7 @@ const steps = [
 
 export const HowItWorks = () => {
   return (
-    <section className="py-20">
+    <section id="how-it-works" className="py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <Badge className="mb-4">

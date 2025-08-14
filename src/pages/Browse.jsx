@@ -1,19 +1,17 @@
 import SEO from "@/components/SEO";
 import SearchAndFilters from "@/components/SearchAndFilters";
 import CelebrityCard from "@/components/CelebrityCard.jsx";
-import { celebrities as allCelebs } from "@/data/celebrities";
 import BookingModal from "@/components/BookingModal";
 import DonationModal from "@/components/DonationModal";
 import { useMemo, useState, useEffect } from "react";
 import supabase from "@/lib/supabaseClient";
-import SeedCelebrities from "@/data/SeedCelebrities";
-import { useNavigate } from "react-router-dom";
+import SeedCelebrities from "@/data/SeedCelebrities"; // Import the seeding function
 
 const Browse = () => {
 
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
-  const [rating, setRating] = useState("");
+  const [rating, setRating] = useState(0);
   const [available, setAvailable] = useState(false);
 
   const [bookingOpen, setBookingOpen] = useState(false);
@@ -22,21 +20,24 @@ const Browse = () => {
 
   const [celebrities, setCelebrities] = useState([]);
 
-  
   useEffect(() => {
-    const fetchCelebrities = async ( ) => {
+    const fetchCelebrities = async () => {
       const { data, error } = await supabase
-        .from("celebrities")
-        .select("*");
+        .from('celebrities')
+        .select('*');
 
       if (error) {
-        console.error("Error fetching celebrities:", error.message);
+        console.error("Error fetching celebrities:", error);
       } else {
+        console.log("Fetched celebrities:", data);
         setCelebrities(data);
       }
     };
+
     fetchCelebrities();
   }, []);
+
+  console.log("Celebrities:", celebrities);
 
 
   // SeedCelebrities();
@@ -66,7 +67,7 @@ const Browse = () => {
         available={available} onAvailable={setAvailable}
       />
 
-      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
         {filtered.map((c) => (
           <CelebrityCard key={c.id} celeb={c} onBook={openBook} onDonate={openDonate} />
         ))}

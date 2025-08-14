@@ -10,27 +10,53 @@ import supabase from "@/lib/supabaseClient";
 const nav = [
   { to: "/", label: "Home" },
   { to: "/browse", label: "Browse Celebrities" },
-  { to: "/#how", label: "How It Works" },
+  { to: "/#how-it-works", label: "How It Works" },
   { to: "/contact", label: "Contact" },
 ];
 
 const Header = () => {
   const [user, setUser] = useState(null);
+  const [activeSection, setActiveSection]  = useState ('')
 
-    useEffect(() => {
+  useEffect(() => {
     const session = supabase.auth.getSession();
     if (session) {
       setUser(session.user);
     }
-
+    // Listen for scroll highlight nav 
+    const handleScroll = () => {
+      const section = document.getElementById('how-it-works');
+      if(section) {
+        const rect = section.getBoundingClientRect();
+        if(rect.top <= 80 && rect.bottom >= 80 ){
+          setActiveSection("how-it-works");
+        } else {
+          setActiveSection("")
+        }
+      }
+    }
+    
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null);
     });
 
+    window.addEventListener("scroll", handleScroll);
+
     return () => {
       authListener?.unsubscribe();
+      window.removeEventListener("scroll", handleScroll)
     };
   }, []);
+
+  // Smooth Scroll handler 
+  const scrollToHowItWorks = (e) => {
+    e.preventDefault()
+    const section = document.getElementById('how-it-works');
+    if(section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+      setActiveSection("how-it-works");
+    }
+  }
 
   return (
     <header className="sticky top-0 z-30 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -39,15 +65,27 @@ const Header = () => {
           <Logo />
           <nav className="hidden md:flex items-center gap-1">
             {nav.map((n) => (
-              <NavLink
-                key={n.to}
-                to={n.to}
-                className={({ isActive }) =>
-                  `px-3 py-2 rounded-md text-sm font-medium hover:bg-accent ${isActive ? 'text-primary' : 'text-foreground'}`
-                }
-              >
-                {n.label}
-              </NavLink>
+              n.label === "How It Works" ? (
+                <a
+                  key={n.to}
+                  href= "/#how-it-works"
+                  onClick={scrollToHowItWorks}
+                  className={`px-3 py-2 rounded-md text-sm font-medium hover:bg-accent ${activeSection === "how-it-works" ? 'text-primary' : 'text-foreground'}`}
+                >
+                  {n.label}
+                </a>
+              ) : (
+                <NavLink
+                  key={n.to}
+                  to={n.to}
+                  className={({ isActive }) =>
+                    `px-3 py-2 rounded-md text-sm font-medium hover:bg-accent ${isActive ? 'text-primary' : 'text-foreground'}`
+                  }
+                >
+                  {n.label}
+                </NavLink>
+              
+              )
             ))}
           </nav>
         </div>
@@ -65,15 +103,26 @@ const Header = () => {
               <SheetContent side="left" className="w-64">
                 <nav className="flex flex-col gap-2 mb-4 mt-2 border-b pb-4">
                   {nav.map((n) => (
-                    <NavLink
-                      key={n.to}
-                      to={n.to}
-                      className={({ isActive }) =>
-                        `px-3 py-2 rounded-md text-sm font-medium hover:bg-accent ${isActive ? 'text-primary' : 'text-foreground'}`
-                      }
-                    >
-                      {n.label}
-                    </NavLink>
+                    n.to === "/#how-it-works" ? (
+                      <a 
+                        key={n.to}
+                        href="#how-it-works"
+                        onClick={scrollToHowItWorks}
+                        className={`px-3 py-2 rounded-md text-sm font-medium hover:bg-accent ${activeSection === "how-it-works" ? 'text-primary' : 'text-foreground'}`}
+                      >
+                        {n.label}
+                      </a>
+                    ) : (
+                      <NavLink
+                        key={n.to}
+                        to={n.to}
+                        className={({ isActive }) =>
+                          `px-3 py-2 rounded-md text-sm font-medium hover:bg-accent ${isActive ? 'text-primary' : 'text-foreground'}`
+                        }
+                      >
+                        {n.label}
+                      </NavLink>
+                    )
                   ))}
                 </nav>
                 <div className="mt-4 flex flex-col gap-2">
