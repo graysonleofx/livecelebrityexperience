@@ -1,7 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Logo from "./Logo";
-import LanguageSelector from "./LanguageSelector";
+import LanguageSelector from "./LanguageSelector.jsx";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState, useEffect } from "react";
@@ -90,7 +90,8 @@ const Header = () => {
           </nav>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <div className="google_translate_element"></div>
           <LanguageSelector />
           {/* Mobile Menu Button (Visible on smaller screens only) */}
           <div className="block md:hidden items-center">

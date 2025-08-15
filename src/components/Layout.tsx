@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import Header from "./Header.jsx";
 import Footer from "./Footer";
 import Preloader from "./Preloader";
-import ChatWidget from "./ChatWidget";
+// import ChatWidget from "./ChatWidget";
 
 const Layout = () => {
   const [loading, setLoading] = useState(true);
@@ -20,7 +20,7 @@ const Layout = () => {
         <Outlet />
       </main>
       <Footer />
-      <ChatWidget />
+      {/* <ChatWidget /> */}
     </div>
   );
 };

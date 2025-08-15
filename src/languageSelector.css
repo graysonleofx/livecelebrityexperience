@@ -1,0 +1,58 @@
+/* languageSelector.css */
+
+/* Container for the Google Translate element */
+.google-translate-element {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 16px 24px;
+  /* background: #f8f9fa; */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(60, 64, 67, 0.08);
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+/* Style the Google Translate dropdown */
+.goog-te-combo {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 1rem;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.goog-te-combo:focus {
+  border-color: #4285f4;
+}
+
+/* Hide Google branding and frame borders */
+.goog-logo-link,
+.goog-te-gadget {
+  display: none !important;
+}
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+/* Remove unwanted spacing */
+body .skiptranslate {
+  padding-top: 0 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .google-translate-container {
+    padding: 8px 12px;
+    max-width: 100%;
+  }
+  .goog-te-combo {
+    font-size: 0.95rem;
+    padding: 6px 8px;
+  }
+}

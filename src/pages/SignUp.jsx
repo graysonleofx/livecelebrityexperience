@@ -36,41 +36,38 @@ const SignUp = () => {
     fetchSession();
   }, []);
 
-  const handleSignUp = async (email, password) => {
-    const { user, error } = await supabase.auth.signUp({ email, password });
-    if (user) {
-      // User signed up successfully
-      toast({ title: "Sign up successful!", description: "Please check your email for confirmation.", status: "success" });
-      // Redirect to sign in page after successful sign up
-      navigate('/signin');
-      // Save user info to Supabase database
-      const { error: dbError } = await supabase.from('users').insert([{ full_name: fullName, email, password }]);
-      if (dbError) {
-        console.error("Error saving user info:", dbError);
-        setErrorMessage(dbError.message);
-        toast({ title: "Error saving user info", description: dbError.message, status: "error" });
-        return;
+  const handleSignUp = async (email, password, fullName) => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: fullName }
+        }
+      });
+
+      if (error) {
+        if (error.message.includes("User already registered")) {
+          setErrorMessage("User already registered with this email.");
+          toast({ title: "User already registered", description: error.message, status: "error" });
+          navigate('/signin'); // Redirect to sign in if the email already exists
+        } else {
+          toast({ title: "Sign Up Error", description: error.message, status: "error" });
+        }
       }
 
-    }
-    // Handle errors
-    if (error) {
-      console.error("Error signing up:", error);
-      if (error.message.includes("User already registered")) {
-        toast({ title: "User already registered", description: "Sign in instead.", status: "error" });
-        setErrorMessage("User already registered. Sign in instead.");
-        navigate('/signin'); // Redirect to sign in if the email already exists
-        return;
-      } else if (error.message.includes("Invalid sign up credentials")) {
-        toast({ title: "Invalid sign up credentials", description: error.message, status: "error" });
-        setErrorMessage("Invalid sign up credentials.");
-        e.target.email.focus(); // Focus on the email input field
-        navigate('/signup'); // Redirect to sign up if there's an error
-        return;
-      }
-      toast({ title: "Error signing up", description: error.message, status: "error" });
-      e.target.email.focus(); // Focus on the email input field
-      navigate('/signup'); // Redirect to sign up if there's an error
+      // If sign up is successful, redirect to sign in page
+      toast({ title: "Sign Up Successful", description: "Please sign in to continue.", status: "success" });
+      setFullName("");
+      setEmail("");
+      setPassword("");
+      navigate('/signin'); // Redirect to sign in page
+      return data;
+    } catch (error) {
+      console.error("Sign Up Error:", error);
+      setErrorMessage(error.message);
+      toast({ title: "Sign Up Error", description: error.message, status: "error" });
+      return null;
     }
   };
 
@@ -84,7 +81,7 @@ const SignUp = () => {
           <form
             className="grid gap-4"
             onSubmit={(e)=>{e.preventDefault(); 
-            handleSignUp(email, password)
+            handleSignUp(email, password, fullName)
             .then(() => {
               if (errorMessage.includes("User already registered")) {
                 toast({ title: "User already registered", description: errorMessage, status: "error" });

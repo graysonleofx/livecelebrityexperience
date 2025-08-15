@@ -9,6 +9,9 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import supabase from "@/lib/supabaseClient"; // Ensure you have the Supabase client set up
 import {useToast} from "@/hooks/use-toast"; // Custom hook for toast notifications
+import z, { object } from "zod";
+import { set } from "date-fns";
+
 
 const BookingModal = ({ open, onOpenChange, celeb }) => {
   const navigate = useNavigate();
@@ -26,46 +29,7 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
     });
   }, []);
 
-  const handleBooking = async () => {
-    setLoading(true);
-
-    if (!user) {
-      setLoading(false);
-      toast({ title: "Booking failed", description: "You must be logged in to book a celebrity.", status: "error" });
-      navigate("/signin");
-      onOpenChange(false);
-      return;
-    } else if (!celeb) {
-      setLoading(false);
-      toast({ title: "Booking failed", description: "No celebrity selected.", status: "error" });
-      onOpenChange(false);
-      return;
-    } else {
-      setLoading(true);
-      toast({ title: "Booking in progress", description: `Booking ${celeb.name}...`, status: "info" });
-      navigate("/booking-confirmation", { state: { celeb } });
-    }
-    try {
-      // Here you would handle the booking logic, e.g., saving to a database
-      // For example, you might want to save the booking details to Supabase
-      const { data, error } = await supabase
-        .from("bookings")
-        .insert([{ user_id: user.id, celeb_id: celeb.id, type: tier, appearance, shoutout, VIP, custom, date, method, vacation, podcast, keynote, charity, secret, hospital, birthday, tour, brand, award, comedy }]);
-
-      if (error) throw error;
-
-      // For now, we'll just simulate a successful booking
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate network delay
-      toast({ title: "Booking successful!", description: `You have successfully booked ${celeb?.name}.`, status: "success" });
-      onOpenChange(false); // Close the modal after booking
-      navigate("/booking-confirmation", { state: { celeb } }); // Redirect to confirmation page
-    } catch (error) {
-      console.error("Error during booking:", error);
-      toast({ title: "Booking failed", description: error.message, status: "error" });
-    } finally {
-      setLoading(false);
-    }
-  };
+  
 
   const TIERS = [
     { id: "Meet & Greet", label: "Meet & Greet (In-Person)", price: 5000 }, // $50.00
@@ -124,6 +88,128 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [message, setMessage] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [city, setCity] = useState("");
+  const [location, setLocation] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [state, setState] = useState("");
+
+  // Booking Data in one object
+  const getBookingData = () => ({
+    celeb,
+    tier,
+    appearance,
+    shoutout,
+    VIP,
+    custom,
+    date,
+    method,
+    vacation,
+    podcast,
+    keynote,
+    charity,
+    secret,
+    hospital,
+    birthday,
+    tour,
+    brand,
+    award,
+    comedy,
+    ...(tier === "concert" && {
+      title: concertTitle,
+      description: concertDescription,
+      location: concertLocation,
+      audience: concertAudience,
+      ticketLink: concertTicketLink,
+      budget: concertBudget
+    }),
+    fan,
+    merch,
+    sports,
+    fashion,
+    zipCode,
+    city,
+    location,
+    name,
+    email,
+    phone,
+    state
+  });
+
+  const handleBooking = async () => {
+    setLoading(true);
+
+    if (!user) {
+      setLoading(false);
+      toast({ title: "Booking failed", description: "You must be logged in to book a celebrity.", status: "error" });
+      navigate("/signin");
+      onOpenChange(false);
+      return;
+    } else if (!celeb) {
+      setLoading(false);
+      toast({ title: "Booking failed", description: "No celebrity selected.", status: "error" });
+      onOpenChange(false);
+      return;
+    } else {
+      setLoading(true);
+      toast({ title: "Booking in progress", description: `Booking ${celeb.name}...`, status: "info" });
+      navigate("/booking-confirmation", { state: { celeb } });
+    }
+    try {
+      // Here you would handle the booking logic, send booking to from sendBooking.js
+      const response = await fetch("pages/api/sendBooking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(getBookingData()),
+      });
+
+      const data = await response.json();
+      console.log("Booking response:", data);
+
+      if (!response.ok) {
+        toast({ title: "Booking failed", description: data.message || "Unknown error", status: "error" });
+        onOpenChange(false);
+        return;
+      } else {
+        // Handle successful booking logic here
+        toast({ title: "Booking successful!", description: `You have successfully booked ${celeb?.name}.`, status: "success" });
+        onOpenChange(false);
+        setName("");
+        setEmail("");
+        setPhone("");
+        setZipCode("");
+        setCity("");
+        setLocation("");
+        setDate("");
+        setTime("");
+        setMessage("");
+        setTier("Meet & Greet");
+        setState("");
+        navigate("/booking-confirmation", { state: { celeb } });
+      }
+
+      // const { data, error } = await supabase
+      //   .from("bookings")
+      //   .insert([{ user_id: user.id, celeb_id: celeb.id, type: tier, appearance, shoutout, VIP, custom, date, method, vacation, podcast, keynote, charity, secret, hospital, birthday, tour, brand, award, comedy }]);
+
+      // if (error) throw error;
+
+      // For now, we'll just simulate a successful booking
+      // await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate network delay
+      // toast({ title: "Booking successful!", description: `You have successfully booked ${celeb?.name}.`, status: "success" });
+      // onOpenChange(false); // Close the modal after booking
+      // navigate("/booking-confirmation", { state: { celeb } }); // Redirect to confirmation page
+    } catch (error) {
+      console.error("Error during booking:", error);
+      toast({ title: "Booking failed", description: error.message, status: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // List all countries in alphabetical order with their code and name as an array of objects
   const COUNTRIES = [
@@ -170,36 +256,36 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
             e.preventDefault();
             const bookingData = {
               celeb, 
-                tier, 
-                appearance,
-                shoutout, 
-                VIP, 
-                custom, 
-                date, 
-                method, 
-                vacation, 
-                podcast, 
-                keynote, 
-                charity, 
-                secret, 
-                hospital, 
-                birthday, 
-                tour, 
-                brand, 
-                award, 
-                comedy ,
-                ...(tier === "concert" && {
-                  title: concertTitle,
-                  description: concertDescription,
-                  location: concertLocation,
-                  audience: concertAudience,
-                  ticketLink: concertTicketLink,
-                  budget: concertBudget
-                }),
-                fan,
-                merch,
-                sports,
-                fashion
+              tier, 
+              appearance,
+              shoutout, 
+              VIP, 
+              custom, 
+              date, 
+              method, 
+              vacation, 
+              podcast, 
+              keynote, 
+              charity, 
+              secret, 
+              hospital, 
+              birthday, 
+              tour, 
+              brand, 
+              award, 
+              comedy ,
+              ...(tier === "concert" && {
+                title: concertTitle,
+                description: concertDescription,
+                location: concertLocation,
+                audience: concertAudience,
+                ticketLink: concertTicketLink,
+                budget: concertBudget
+              }),
+              fan,
+              merch,
+              sports,
+              fashion
             }
             // Handle booking logic here
             if (method === "gift" || method === "crypto") {
@@ -209,16 +295,8 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
                 }});
               
             } else if (method === "paypal" || method === "cashapp" || method === "venmo" || method === "wire" || method === "mg" || method === "wu") {
-              // Handle other payment methods just submit
-              handleBooking().then(() => {
-                if (loading) {
-                  toast({ title: "Booking in progress", description: `Booking ${celeb?.name}...`, status: "info" });
-                } else {
-                  onOpenChange(false); // Close the modal after booking
-                  navigate("/booking-confirmation", { state:{ bookingData }});
-                  toast({ title: "Booking successful!", description: `You have successfully booked ${celeb?.name}.`, status: "success" });
-                }
-              });
+              handleBooking()
+              navigate("/booking-confirmation", { state: { bookingData } });
             } else {
               // Handle other cases
               handleBooking().then(() => {
@@ -296,8 +374,8 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="grid gap-2"><Label>Name</Label><Input required /></div>
-            <div className="grid gap-2"><Label>Email</Label><Input type="email" required /></div>
+            <div className="grid gap-2"><Label>Name</Label><Input required onChange={e => setName(e.target.value)} /></div>
+            <div className="grid gap-2"><Label>Email</Label><Input type="email" required onChange={e => setEmail(e.target.value)} /></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {/* for Country/Region in select element */}
@@ -316,22 +394,22 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid gap-2"><Label>State</Label><Input required/></div>
+            <div className="grid gap-2"><Label>State</Label><Input required onChange={e => setState(e.target.value)} /></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="grid gap-2"><Label>Zip Code</Label><Input required /></div>
-            <div className="grid gap-2"><Label>Town/City</Label><Input required/></div>
+            <div className="grid gap-2"><Label>Zip Code</Label><Input required onChange={e => setZipCode(e.target.value)} /></div>
+            <div className="grid gap-2"><Label>Town/City</Label><Input required onChange={e => setCity(e.target.value)} /></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="grid gap-2"><Label>Phone</Label><Input type="tel" /></div>
-            <div className="grid gap-2"><Label>Location</Label><Input required /></div>
+            <div className="grid gap-2"><Label>Phone</Label><Input type="tel" onChange={e => setPhone(e.target.value)} /></div>
+            <div className="grid gap-2"><Label>Location</Label><Input required onChange={e => setLocation(e.target.value)} /></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="grid gap-2"><Label>Date</Label><Input type="date" required value={date} onChange={(e) => setDate(e.target.value)} /></div>
-            <div className="grid gap-2"><Label>Time</Label><Input type="time" required value={time} onChange={(e) => setTime(e.target.value)} /></div>
+            <div className="grid gap-2"><Label>Date</Label><Input type="date" required value={date} onChange={e => setDate(e.target.value)} /></div>
+            <div className="grid gap-2"><Label>Time</Label><Input type="time" required value={time} onChange={e => setTime(e.target.value)} /></div>
           </div>
-          <div className="grid gap-2"><Label>Message</Label><Textarea rows={3} value={message} onChange={(e) => setMessage(e.target.value)} /></div>
- 
+          <div className="grid gap-2"><Label>Message</Label><Textarea rows={3} value={message} onChange={e => setMessage(e.target.value)} /></div>
+
           <div className="grid gap-2">
             <Label>Preferred Payment Method</Label>
             <Select value={method} onValueChange={setMethod}>
