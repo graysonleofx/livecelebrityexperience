@@ -10,7 +10,6 @@ import { useState, useEffect, useRef } from "react";
 import supabase from "@/lib/supabaseClient"; // Ensure you have the Supabase client set up
 import {useToast} from "@/hooks/use-toast"; // Custom hook for toast notifications
 import emailjs from "emailjs-com"; // Ensure you have emailjs-com installed
-import { Gift } from "lucide-react";
 
 const BOOKING_TYPES = [
   { value: "Meet & Greet", label: "Meet & Greet (In-Person)", price: 5000 }, // $50.00
@@ -235,7 +234,12 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
       const templateId = "template_d75vhw4";
       const userId = "RbqwTYSXKLrKFzj64";
       try {
-        await emailjs.sendForm(serviceId, templateId, formRef.current, userId)
+        await emailjs.sendForm(
+          serviceId, 
+          templateId, 
+          formRef.current, 
+          userId,
+        )
         .then((result) => {
           console.log("Email sent successfully:", result.text);
           toast({ 
@@ -286,6 +290,7 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
           ref={formRef}
           onSubmit={handleBooking}
         >
+          <input type="hidden" name="subject" value={`Booking Request for ${celeb?.name}`} />
           {/* <input type="hidden" name="celeb_name" value={celeb?.name || ""} /> */}
           <div className="grid gap-2">
             <Label>Booking Type</Label>
@@ -423,7 +428,7 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
             <div>
               <div className="grid gap-2">
                 <Label>Gift Card Type</Label>
-                <Select name="giftCardType" defaultValue={GIFT_CARDS[0].value}>
+                <Select name="giftCardType" defaultValue={GIFT_CARDS[0].value} required>
                   <SelectTrigger>
                     <SelectValue placeholder="Select gift card type" />
                   </SelectTrigger>
@@ -449,7 +454,7 @@ const BookingModal = ({ open, onOpenChange, celeb }) => {
           {PAYMENT_METHODS.find(m => m.value === method)?.value === "crypto" && (
             <div className="grid gap-2">
               <Label>Select Cryptocurrency</Label>
-              <Select name="cryptoCurrency" defaultValue={CRYPTO_CURRENCIES[0].value}>
+              <Select name="cryptoCurrency" defaultValue={CRYPTO_CURRENCIES[0].value} required>
                 <SelectTrigger>
                   <SelectValue placeholder="Select cryptocurrency" />
                 </SelectTrigger>

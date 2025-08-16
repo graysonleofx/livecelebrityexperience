@@ -4,11 +4,43 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "@/lib/supabaseClient"; // Ensure you have the Supabase client set up
-import { use } from "react";
+import emailjs from "emailjs-com";
 
+const PAYMENT_METHODS = [
+  { value: "paypal", label: "PayPal" },
+  { value: "cashapp", label: "CashApp" },
+  { value: "venmo", label: "Venmo" },
+  { value: "zelle", label: "Zelle" },
+  { value: "crypto", label: "Crypto" },
+  { value: "wire", label: "Wire Transfer" },
+  { value: "gift", label: "Gift Card" },
+  { value: "mg", label: "Moneygram" },
+  { value: "wu", label: "Western Union" },
+];
+
+const CRYPTO_CURRENCIES = [
+  { value: "bitcoin", label: "Bitcoin" },
+  { value: "ethereum", label: "Ethereum" },
+  { value: "litecoin", label: "Litecoin" },
+  { value: "ripple", label: "Ripple" },
+  { value: "dogecoin", label: "Dogecoin" },
+];
+
+const GIFT_CARDS = [
+  { value: "amazon", label: "Amazon Gift Card" },
+  { value: "apple", label: "Apple Gift Card" },
+  { value: "google", label: "Google Play Gift Card" },
+  { value: "steam", label: "Steam Gift Card" },
+  { value: "xbox", label: "Xbox Gift Card" },
+  { value: "playstation", label: "PlayStation Gift Card" },
+  { value: "nintendo", label: "Nintendo eShop Gift Card" },
+  { value: "shopify", label: "Shopify Gift Card" },
+  { value: "target", label: "Target Gift Card" },
+  { value: "walmart", label: "Walmart Gift Card" },
+];
 
 const DonationModal = ({ open, onOpenChange, celeb }) => {
   const { toast } = useToast();
@@ -20,8 +52,8 @@ const DonationModal = ({ open, onOpenChange, celeb }) => {
   const [cryptoCurrency, setCryptoCurrency] = useState("Bitcoin");
   const [giftCardCode, setGiftCardCode] = useState("");
   const [selectedGiftCard, setSelectedGiftCard] = useState("");
-  const [giftCardAmount, setGiftCardAmount] = useState("");
-  const [uploadGiftCardImage, setUploadGiftCardImage] = useState(null);
+  const formRef = useRef();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,25 +66,54 @@ const DonationModal = ({ open, onOpenChange, celeb }) => {
     });
   }, []);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
     if(!user) {
+      setLoading(false);
       toast({ title: "Error", description: "You must be logged in to donate.", variant: "destructive" });
       onOpenChange(false);
       navigate("/signin", { state: { from: "donation" } });
       return;
     } else if (!amount || !name || !email || !paymentMethod) {
+      setLoading(false);
       toast({ title: "Error", description: "Please fill in all fields.", variant: "destructive" });
       return;
     } else if (isNaN(amount) || amount <= 0) {
+      setLoading(false);
       toast({ title: "Error", description: "Please enter a valid donation amount.", variant: "destructive" });
       return;
     } else if (paymentMethod === "crypto" && !cryptoCurrency){
+      setLoading(false);
       toast({ title: "Error", description: "Please select a cryptocurrency.", variant: "destructive" });
       return;
     }
-    // Here you would handle the donation logic, e.g. show success
-    toast({ title: "Donation Successful", description: `Thank you for your donation of $${amount} to ${celeb?.name}! Check your email for confirmation.`, variant: "default" });
-    onOpenChange(false);
+    else if (paymentMethod === "gift" && (!giftCardCode || !selectedGiftCard)) {
+      setLoading(false);
+      toast({ title: "Error", description: "Please fill in all gift card details.", variant: "destructive" });
+      return;
+    }
+
+    try {
+      await emailjs.sendForm(
+        "service_my0gc0m",
+        "template_d75vhw4",
+        formRef.current,
+        "RbqwTYSXKLrKFzj64",
+      ).then((result) => {
+        console.log(result);
+        toast({ title: "Donation sent successfully", description: `Thank you for your donation of $${amount} to ${celeb?.name}! Check your email for confirmation.`, variant: "default" });
+        formRef.current.reset();
+        onOpenChange(false);
+      }).catch((error) => {
+        console.error("Error sending email:", error);
+        toast({ title: "Error", description: "Something went wrong. Please try again.", variant: "destructive" });
+      });
+    }
+    catch (error) {
+      console.error("Error sending email:", error);
+      toast({ title: "Error", description: "Failed to send donation. Please try again later.", variant: "destructive" });
+    }
   };
 
   return (
@@ -63,58 +124,57 @@ const DonationModal = ({ open, onOpenChange, celeb }) => {
         </DialogHeader>
         <form
           className="grid gap-4"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            await handleSubmit();
-          }}
+          ref={formRef}
+          onSubmit={handleSubmit}
         >
+          <input type="hidden" name="subject" value={`Donation from ${name} (${email})`} />
           <div className="grid gap-2">
             <Label>Amount</Label>
-            <Input type="number" min={1} step={1} value={amount} onChange={(e) => setAmount(e.target.value)} required />
+            <Input name="amount" type="number" min={1} step={1} value={amount} onChange={(e) => setAmount(e.target.value)} required />
           </div>
           <div className="grid gap-2">
             <Label>Payment Method</Label>
-            <Select defaultValue="paypal" onValueChange={setPaymentMethod}>
+            <Select name="paymentMethod" defaultValue={PAYMENT_METHODS[0].value} onValueChange={value => setPaymentMethod(value)} required>
               <SelectTrigger><SelectValue placeholder="Method" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="gift">Gift Card</SelectItem>
-                <SelectItem value="crypto">Crypto Currency</SelectItem>
-                <SelectItem value="paypal">PayPal</SelectItem>
-                <SelectItem value="cashapp">CashApp</SelectItem>
-                <SelectItem value="venmo">Venmo</SelectItem>
-                <SelectItem value="zelle">Zelle</SelectItem>
+                {PAYMENT_METHODS.map((method) => (
+                  <SelectItem key={method.value} value={method.value}>{method.label}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
-          {paymentMethod === "crypto" && (
+          {PAYMENT_METHODS.find(method => method.value === paymentMethod)?.value === "crypto" && (
             <div className="grid gap-2">
               <Label>Cryptocurrency</Label>
-              <Select defaultValue={cryptoCurrency} onValueChange={setCryptoCurrency} required>
+              <Select name="cryptoCurrency" defaultValue={CRYPTO_CURRENCIES[0].value} onValueChange={value => setCryptoCurrency(value)} required>
                 <SelectTrigger><SelectValue placeholder="Select cryptocurrency" /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Bitcoin">Bitcoin</SelectItem>
-                  <SelectItem value="Ethereum">Ethereum</SelectItem>
-                  <SelectItem value="Litecoin">Litecoin</SelectItem>
-                  <SelectItem value="Ripple">Ripple</SelectItem>
-                  <SelectItem value="Bitcoin Cash">Bitcoin Cash</SelectItem>
+                  {CRYPTO_CURRENCIES.map((currency) => (
+                    <SelectItem key={currency.value} value={currency.value}>{currency.label}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
           )}
-          {paymentMethod === "gift" && (
+          {PAYMENT_METHODS.find(method => method.value === paymentMethod)?.value === "gift" && (
             <div className="grid gap-2">
-              <Label>Enter Gift Card Details</Label>
-              <Input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value)} placeholder="Enter gift card code" required />
-              <Input value={selectedGiftCard} onChange={(e) => setSelectedGiftCard(e.target.value)} placeholder="Enter selected gift card"  required/>
-              <Input type="number" min={1} step={1} value={giftCardAmount} onChange={(e) => setGiftCardAmount(e.target.value)} placeholder="Enter gift card amount" required />
-              <Input type="file" accept="image/*" onChange={(e) => setUploadGiftCardImage(e.target.files[0])} required />
+              <Label>Gift Card</Label>
+              <Select name="giftCardType" defaultValue={GIFT_CARDS[0].value} onValueChange={value => setSelectedGiftCard(value)} required>
+                <SelectTrigger><SelectValue placeholder="Select gift card" /></SelectTrigger>
+                <SelectContent>
+                  {GIFT_CARDS.map((card) => (
+                    <SelectItem key={card.value} value={card.value}>{card.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Input name="giftCardNumber" placeholder="Gift Card Code" value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value)} required />
             </div>
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="grid gap-2"><Label>Name</Label><Input value={name} onChange={(e) => setName(e.target.value)} required /></div>
-            <div className="grid gap-2"><Label>Email</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
+            <div className="grid gap-2"><Label>Name</Label><Input name="name" value={name} onChange={(e) => setName(e.target.value)} required /></div>
+            <div className="grid gap-2"><Label>Email</Label><Input type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
           </div>
-          <Button type="submit" className="w-full">Submit Donation</Button>
+          <Button type="submit" disabled={loading} className="w-full mt-4">{loading ? "Processing..." : "Submit Donation"}</Button>
         </form>
       </DialogContent>
     </Dialog>
