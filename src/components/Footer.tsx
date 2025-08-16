@@ -36,12 +36,12 @@ const Footer = () => {
         </div>
         <div>
           <h3 className="font-semibold mb-3">Contact</h3>
-          <p className="text-sm text-muted-foreground">support@celebrityexperience.app<br/>+1 (555) 010-9999</p>
+          <p className="text-sm text-muted-foreground">contact-us@livecelebrityexperience.online<br/>+1 (555) 010-9999</p>
         </div>
       </div>
       <Separator />
       <div className="container mx-auto px-4 py-6 text-sm text-muted-foreground flex items-center justify-between">
-        <p>© {new Date().getFullYear()} Celebrity Experience</p>
+        <p>© {new Date().getFullYear()} Live Celebrity Experience</p>
         <p>All rights reserved.</p>
       </div>
     </footer>

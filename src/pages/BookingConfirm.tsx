@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const BookingConfirm = () => {
   const location = useLocation();
-  const { celeb, tier, date, method } = location.state || {};
+  const { celeb, bookingData } = location.state || {};
   const navigate = useNavigate();
 
   return (
@@ -28,15 +28,15 @@ const BookingConfirm = () => {
           </div>
           <div className="grid gap-2">
             <Label className=""><strong className="text-lg">Booking Type:</strong> </Label>
-            <div className="">{tier || "N/A"}</div>
+            <div className="">{bookingData.bookingType || "N/A"}</div>
           </div>
           <div className="grid gap-2">
             <Label className=""><strong className="text-lg">Booking Date:</strong> </Label>
-            <div className="">{date || "N/A"}</div>
+            <div className="">{bookingData.date || "N/A"}</div>
           </div>
           <div className="grid gap-2">
             <Label className=""><strong className="text-lg">Payment Method:</strong> </Label>
-            <div className="">{method || "N/A"}</div>
+            <div className="">{bookingData.method || "N/A"}</div>
           </div>
         </div>
       </div>

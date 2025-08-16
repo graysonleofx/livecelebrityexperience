@@ -46,7 +46,7 @@ export const HeroSection = () => {
               variant="hero" 
               size="lg" 
               className="min-w-[200px]"
-              onClick={() => window.location.href = '/celebrities'}
+              onClick={() => window.location.href = '/browse'}
             >
               Browse Celebrities
               <ArrowRight className="ml-2 h-5 w-5" />
