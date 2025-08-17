@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Star, ArrowRight, Users, Calendar, Shield } from "lucide-react"
 import heroImage from "@/assets/hero/hero.jpg"
+import {Link, NavLink } from "react-router-dom"
 
 
 export const HeroSection = () => {
@@ -42,23 +43,25 @@ export const HeroSection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              variant="hero" 
-              size="lg" 
-              className="min-w-[200px]"
-              onClick={() => window.location.href = '/Browse'}
-            >
-              Browse Celebrities
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="min-w-[200px] bg-background/10 border-primary-foreground/30 text-primary-foreground hover:bg-background/20"
-              onClick={() => window.location.href = '/Contact'}
-            >
-              Contact Us
-            </Button>
+            <Link to="/browse">
+              <Button 
+                variant="hero" 
+                size="lg" 
+                className="min-w-[200px]"
+              >
+                Browse Celebrities
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link to="/bontact">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="min-w-[200px] bg-background/10 border-primary-foreground/30 text-primary-foreground hover:bg-background/20"
+              >
+                Contact Us
+              </Button>
+            </Link>
           </div>
 
           {/* Stats */}
