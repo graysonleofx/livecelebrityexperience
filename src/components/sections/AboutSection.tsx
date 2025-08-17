@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const AboutSection = () => {
   return (
@@ -11,18 +12,18 @@ const AboutSection = () => {
         our platform connects you with verified celebrities who are ready to make your occasion truly special.
       </p>
       <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-8">
-        <a
-          href="/browse"
+        <Link
+          to="/browse"
           className="inline-flex items-center px-6 py-3 bg-gradient-brand text-white rounded-lg hover:bg-primary-dark transition-colors"
         >
           Book Now
-        </a>
-        <a
-          href="/browse"
+        </Link>
+        <Link
+          to="/browse"
           className="inline-flex items-center px-6 py-3 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors bg-background"
         >
           View Celebrities
-        </a>
+        </Link>
       </div>
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <article className="rounded-xl border bg-card p-4">
