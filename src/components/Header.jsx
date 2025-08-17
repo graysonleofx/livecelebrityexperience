@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import Logo from "./Logo";
+import Logo from "./Logo.jsx";
 import LanguageSelector from "./LanguageSelector.jsx";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";

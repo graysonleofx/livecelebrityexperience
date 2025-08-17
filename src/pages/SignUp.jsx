@@ -37,37 +37,49 @@ const SignUp = () => {
   }, []);
 
   const handleSignUp = async (email, password, fullName) => {
+    if (!email || !password || !fullName) {
+      toast({ title: "Error", description: "All fields are required", variant: "destructive" });
+      return;
+    }
     try {
+      // console.log("Signing up user:", { email, password, fullName });
+      // Sign up the user with Supabase
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: { full_name: fullName }
-        }
+          data: { 
+            full_name: fullName,
+          },
+        },
       });
 
+
+      if (data?.user) {
+        // User signed up successfully
+        setUser(data.user);
+        toast({ title: "Account created successfully!", variant: "success" });
+        navigate("/signin");
+      } else {
+        setErrorMessage("Error signing up");
+      }
+
       if (error) {
-        if (error.message.includes("User already registered")) {
-          setErrorMessage("User already registered with this email.");
-          toast({ title: "User already registered", description: error.message, status: "error" });
-          navigate('/signin'); // Redirect to sign in if the email already exists
+        if (error.message === "User already registered") {
+          setErrorMessage("User already registered");
+          toast({ title: "Error", description: "User already registered", variant: "destructive" });
         } else {
-          toast({ title: "Sign Up Error", description: error.message, status: "error" });
+          setErrorMessage("Error signing up");
+          toast({ title: "Error", description: "Error signing up", variant: "destructive" });
         }
       }
 
-      // If sign up is successful, redirect to sign in page
-      toast({ title: "Sign Up Successful", description: "Please sign in to continue.", status: "success" });
-      setFullName("");
-      setEmail("");
-      setPassword("");
-      navigate('/signin'); // Redirect to sign in page
-      return data;
+      // console.log("User signed up:", data.user);
+      console.log("Error signing up:", error);
     } catch (error) {
-      console.error("Sign Up Error:", error);
-      setErrorMessage(error.message);
-      toast({ title: "Sign Up Error", description: error.message, status: "error" });
-      return null;
+      setErrorMessage("Error signing up");
+      console.log("Signup Error", error);
+      toast({ title: "Error", description: "Error signing up", variant: "destructive" });
     }
   };
 
@@ -80,25 +92,18 @@ const SignUp = () => {
         <CardContent>
           <form
             className="grid gap-4"
-            onSubmit={(e)=>{e.preventDefault(); 
-            handleSignUp(email, password, fullName)
-            .then(() => {
-              if (errorMessage.includes("User already registered")) {
-                toast({ title: "User already registered", description: errorMessage, status: "error" });
-                e.target.email.focus();
-                navigate('/signin'); // Redirect to sign in if the email already exists
-              } else if (errorMessage.includes("Invalid sign up credentials")) {
-                toast({ title: "Invalid sign up credentials", description: errorMessage, status: "error" });
-                e.target.email.focus();
-              } else {
-                navigate('/signin'); // Redirect to sign in after successful sign up
-              }
-            });
-          }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSignUp(email, password, fullName);
+              console.log(email, password, fullName);
+            }}
           >
-            <div className="grid gap-2"><Label>Full Name</Label><Input value={fullName} onChange={(e) => setFullName(e.target.value)} required /></div>
-            <div className="grid gap-2"><Label>Email</Label><Input value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
-            <div className="grid gap-2"><Label>Password</Label><Input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)}  required /></div>
+            <Label htmlFor="fullName">Full Name</Label>
+            <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+            <Label htmlFor="email">Email</Label>
+            <Input id="email"  value={email} onChange={(e) => setEmail(e.target.value)} type="email" required />
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
             <Button type="submit">Create account</Button>
             <div className="text-sm">Already have an account? <Link to="/signin" className="story-link">Sign in</Link></div>
           </form>

@@ -9,7 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect } from "react";
 import supabase from "@/lib/supabaseClient";
-import { Form } from "react-hook-form";
 
 const CATEGORY_OPTIONS = [
   { value: 'actor', label: 'Actor' },
@@ -56,7 +55,7 @@ const Admin = () => {
   }, []);
 
   const handleSignInAdmin = () => {
-    if (email !== 'admin@livecelebrityexperience.online' || password !== 'admin04') {
+    if (email !== 'admin@admin.com' || password !== 'admin04') {
       setAuthed(false);
       toast({ title: 'Invalid credentials', description: 'Please check your email and password.', variant: 'destructive' });
       return;

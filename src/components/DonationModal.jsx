@@ -102,7 +102,7 @@ const DonationModal = ({ open, onOpenChange, celeb }) => {
         "RbqwTYSXKLrKFzj64",
       ).then((result) => {
         console.log(result);
-        toast({ title: "Donation sent successfully", description: `Thank you for your donation of $${amount} to ${celeb?.name}! Check your email for confirmation.`, variant: "default" });
+        toast({ title: "Donation Received", description: `Payment details will be sent to ${email} for your donation of $${amount}.`, variant: "default" });
         formRef.current.reset();
         onOpenChange(false);
       }).catch((error) => {

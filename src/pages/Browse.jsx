@@ -29,7 +29,7 @@ const Browse = () => {
       if (error) {
         console.error("Error fetching celebrities:", error);
       } else {
-        console.log("Fetched celebrities:", data);
+        // console.log("Fetched celebrities:", data);
         setCelebrities(data);
       }
     };
@@ -37,7 +37,7 @@ const Browse = () => {
     fetchCelebrities();
   }, []);
 
-  console.log("Celebrities:", celebrities);
+  // console.log("Celebrities:", celebrities);
 
 
   // SeedCelebrities();
