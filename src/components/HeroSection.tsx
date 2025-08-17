@@ -46,7 +46,7 @@ export const HeroSection = () => {
               variant="hero" 
               size="lg" 
               className="min-w-[200px]"
-              onClick={() => window.location.href = '/browse'}
+              onClick={() => window.location.href = '/Browse'}
             >
               Browse Celebrities
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -55,7 +55,7 @@ export const HeroSection = () => {
               variant="outline" 
               size="lg" 
               className="min-w-[200px] bg-background/10 border-primary-foreground/30 text-primary-foreground hover:bg-background/20"
-              onClick={() => window.location.href = '/contact'}
+              onClick={() => window.location.href = '/Contact'}
             >
               Contact Us
             </Button>

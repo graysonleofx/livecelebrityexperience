@@ -12,13 +12,13 @@ const AboutSection = () => {
       </p>
       <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-8">
         <a
-          href="/browse"
+          href="/Browse"
           className="inline-flex items-center px-6 py-3 bg-gradient-brand text-white rounded-lg hover:bg-primary-dark transition-colors"
         >
           Book Now
         </a>
         <a
-          href="/browse"
+          href="/Browse"
           className="inline-flex items-center px-6 py-3 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors bg-background"
         >
           View Celebrities
