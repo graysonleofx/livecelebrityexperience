@@ -12,7 +12,7 @@ import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin.jsx";
-import Contact from "./pages/Contact";
+import Contact from "./pages/Contact.jsx";
 import Layout from "./components/Layout";
 
 const queryClient = new QueryClient();
