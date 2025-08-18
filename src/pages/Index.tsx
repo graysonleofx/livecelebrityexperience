@@ -1,7 +1,7 @@
 import { HeroSection } from "@/components/HeroSection";
 import SEO from "@/components/SEO";
 import CelebrityCard from "@/components/CelebrityCard.jsx";
-import { celebrities, Celebrity } from "@/data/celebrities";
+import { celebrities, Celebrity } from "@/data/celebrities.js";
 import BookingModal from "@/components/BookingModal.jsx";
 import DonationModal from "@/components/DonationModal.jsx";
 import { useState } from "react";

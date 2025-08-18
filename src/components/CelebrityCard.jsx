@@ -1,13 +1,12 @@
 import { Star, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import supabase from "@/lib/supabaseClient";
 
 const CelebrityCard = ({ celeb, onBook, onDonate }) => {
   const stars = Array.from({ length: 5 }, (_, i) => i < Math.round(celeb.rating));
   return (
     <Card className="overflow-hidden rounded-2xl">
-      <img src={celeb.photo} alt={`${celeb.name} portrait`} loading="lazy" className="h-56 w-full object-cover" />
+      <img src={celeb.photo} alt={`${celeb.name} portrait`} loading="lazy" className="h-[300px] w-full object-cover object-top rounded-t" />
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div>
