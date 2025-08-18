@@ -53,7 +53,7 @@ export const HeroSection = () => {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link to="/bontact">
+            <Link to="/contact">
               <Button 
                 variant="outline" 
                 size="lg" 
