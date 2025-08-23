@@ -12,29 +12,29 @@ import {useToast} from "@/hooks/use-toast"; // Custom hook for toast notificatio
 import emailjs from "emailjs-com"; // Ensure you have emailjs-com installed
 
 const BOOKING_TYPES = [
-  { value: "Meet & Greet", label: "Meet & Greet (In-Person)", price: 5000 }, // $50.00
-  { value: "Appearance", label: "Appearance (Virtual)", price: 3000 }, // $30.00
-  { value: "Video Shoutout", label: "Video Shoutout (Personalized)", price: 10000 }, // $100.00
-  { value: "VIP Experience", label: "VIP Experience", price: 20000 }, // $200.00
-  { value: "Dinner Date", label: "Dinner Date", price: 30000 }, // $300.00
-  { value: "Vacation Package", label: "Vacation Package", price: 50000 }, // $500.00
-  { value: "Podcast Interview", label: "Podcast Interview", price: 20000 }, // $200.00
-  { value: "Keynote Speech", label: "Keynote Speech", price: 15000 }, // $150.00
-  { value: "Charity Event Participation", label: "Charity Event Participation", price: 25000 }, // $250.00
-  { value: "Secret Meet", label: "Secret Meet", price: 20000 }, // $200.00
-  { value: "Hospital Visit", label: "Hospital Visit", price: 15000 }, // $150.00
-  { value: "Birthday Surprise", label: "Birthday Surprise", price: 20000 }, // $200.00
-  { value: "Tour with Celebrity", label: "Tour with Celebrity", price: 15000 }, // $150.00
-  { value: "Brand Endorsement", label: "Brand Endorsement", price: 5000 }, // $50.00
-  { value: "Award Ceremony Appearance", label: "Award Ceremony Appearance", price: 10000 }, // $100.00
-  { value: "Comedy Show Appearance", label: "Comedy Show Appearance", price: 30000 }, // $300.00
-  { value: "Private Concert", label: "Private Concert", price: 20000 }, // $200.00
-  { value: "Sports Event Appearance", label: "Sports Event Appearance", price: 25000 }, // $250.00
-  { value: "Fashion Show Appearance", label: "Fashion Show Appearance", price: 30000 }, // $300.00
-  { value: "Merchandise Bundle", label: "Merchandise Bundle", price: 15000 }, // $150.00
-  { value: "Fan Card Membership", label: "Fan Card Membership", price: 5000 }, // $50.00
-  { value: "Concert Booking", label: "Concert Booking", price: 20000 }, // $200.00
-  { value: "Custom Request", label: "Custom Request", price: 0 }, // Contact for pricing
+  { value: "Meet & Greet", label: "Meet & Greet (In-Person)", price: 3000},
+  { value: "Appearance", label: "Appearance (Virtual)", price: 1500 },
+  { value: "Video Shoutout", label: "Video Shoutout (Personalized)", price: 5000 },
+  { value: "VIP Experience", label: "VIP Experience", price: 10000 },
+  { value: "Dinner Date", label: "Dinner Date", price: 10000 },
+  { value: "Vacation Package", label: "Vacation Package", price: 15000 },
+  { value: "Podcast Interview", label: "Podcast Interview", price: 10000 },
+  { value: "Keynote Speech", label: "Keynote Speech", price: 8000 },
+  { value: "Charity Event Participation", label: "Charity Event Participation", price: 20000 },
+  { value: "Secret Meet", label: "Secret Meet", price: 15000 },
+  { value: "Hospital Visit", label: "Hospital Visit", price: 8000 },
+  { value: "Birthday Surprise", label: "Birthday Surprise", price: 10000 },
+  { value: "Tour with Celebrity", label: "Tour with Celebrity", price: 15000 },
+  { value: "Brand Endorsement", label: "Brand Endorsement", price: 20000 },
+  { value: "Award Ceremony Appearance", label: "Award Ceremony Appearance", price: 15000 },
+  { value: "Comedy Show Appearance", label: "Comedy Show Appearance", price: 15000 },
+  { value: "Private Concert", label: "Private Concert", price: 20000 }, 
+  { value: "Sports Event Appearance", label: "Sports Event Appearance", price: 17000 },
+  { value: "Fashion Show Appearance", label: "Fashion Show Appearance", price: 20000 },
+  { value: "Merchandise Bundle", label: "Merchandise Bundle", price: 5000 },
+  { value: "Fan Card Membership", label: "Fan Card Membership", price: 1500 },
+  { value: "Concert Booking", label: "Concert Booking", price: 1000 },
+  { value: "Custom Request", label: "Custom Request"},
 ];
 
 const PAYMENT_METHODS = [
