@@ -34,7 +34,7 @@ const BOOKING_TYPES = [
   { value: "Merchandise Bundle", label: "Merchandise Bundle", price: 5000 },
   { value: "Fan Card Membership", label: "Fan Card Membership", price: 1500 },
   { value: "Concert Booking", label: "Concert Booking", price: 1000 },
-  { value: "Custom Request", label: "Custom Request"},
+  { value: "Custom Request", label: "Custom Request", price: 0 },
 ];
 
 const PAYMENT_METHODS = [
