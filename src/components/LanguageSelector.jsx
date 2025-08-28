@@ -4,50 +4,25 @@ import '../languageSelector.css'
 
 const LanguageSelector = () => {
   useEffect(() => {
-
     window.gtranslateSettings = {
-      "default_language": "en",
-      "detect_browser_language": true,
-      "languages": ["en", "fr", "it", "es", "de"],
-      "wrapper_selector": ".gtranslate_wrapper",
-      "switcher_horizontal_position": "inline",
-      "float_switcher_open_direction": "bottom",
-      "alt_flags": { "en": "usa" }
-    };
-
-    window.googleTranslateElementInit = () => {
-      setTimeout(() => {
-        new window.google.translate.TranslateElement({
-          pageLanguage: 'en',
-        }, ".google_translate_element");
-      }, 500);
-    };
+      "default_language":"en",
+      "detect_browser_language":true,
+      "languages":["en","es","de","fr"],
+      "wrapper_selector":".gtranslate_wrapper",
+      "switcher_horizontal_position":"inline",
+      "float_switcher_open_direction":"bottom",
+      "alt_flags":{"en":"usa"}
+    }
 
     const script = document.createElement("script");
-    script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-    // script.defer = true;
-    script.async = true;
+    script.src = "https://cdn.gtranslate.net/widgets/latest/float.js";
+    script.defer = true;
     document.body.appendChild(script);
-
-    
   }, []);
-
-  const handleLanguageChange = (value) => {
-    const tryChangeLanguage = () => {
-      const select = document.querySelector('.goog-te-combo');
-      if (select) {
-        select.value = value;
-        select.dispatchEvent(new Event('change'));
-      } else {
-        setTimeout(tryChangeLanguage, 100); // Retry every 100ms until select exists
-      }
-    };
-    tryChangeLanguage();
-  };
 
   return (
     <div className="gtranslate_wrapper">
-      <Select onValueChange={handleLanguageChange} defaultValue="en">
+      {/* <Select onValueChange={handleLanguageChange} defaultValue="en">
         <SelectTrigger>
           <SelectValue placeholder="Select Language" />
         </SelectTrigger>
@@ -58,7 +33,7 @@ const LanguageSelector = () => {
           <SelectItem value="es">Spanish</SelectItem>
           <SelectItem value="de">German</SelectItem>
         </SelectContent>
-      </Select>
+      </Select> */}
     </div>
   );
 };

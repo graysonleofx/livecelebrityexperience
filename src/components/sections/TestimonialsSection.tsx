@@ -9,17 +9,17 @@ const TestimonialsSection = () => {
       <h2 id="testimonials-title" className="text-2xl md:text-3xl font-bold mb-6 text-center">What People Say About Us</h2>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <figure className="rounded-xl border bg-card p-5">
-          <img src={Cl1} alt={'Cl1'} loading="lazy" className="h-[300px] w-full object-cover rounded-lg" />
+          <img src={Cl1} alt={'Bernice W.'} loading="lazy" className="h-[300px] w-full object-cover rounded-lg" />
           <blockquote className="text-base mt-3">“Absolutely magical! The video shoutout brought my sister to tears.”</blockquote>
           <figcaption className="mt-3 text-sm text-muted-foreground">— Bernice W.</figcaption>
         </figure>
         <figure className="rounded-xl border bg-card p-5">
-          <img src={Cl2} alt={'Cl2'} loading="lazy" className="h-[300px] w-full object-cover  rounded-lg" />
+          <img src={Cl2} alt={'Clifford D.'} loading="lazy" className="h-[300px] w-full object-cover  rounded-lg" />
           <blockquote className="text-base mt-3">“Professional and effortless from start to finish. Highly recommended.”</blockquote>
           <figcaption className="mt-3 text-sm text-muted-foreground">— Clifford D.</figcaption>
         </figure>
         <figure className="rounded-xl border bg-card p-5">
-          <img src={Cl3} alt={'Cl3'} loading="lazy" className="h-[300px] w-full object-cover  rounded-lg" />
+          <img src={Cl3} alt={'Daniel M.'} loading="lazy" className="h-[300px] w-full object-cover  rounded-lg" />
           <blockquote className="text-base mt-3">“The meet & greet exceeded expectations. Truly unforgettable.”</blockquote>
           <figcaption className="mt-3 text-sm text-muted-foreground">— Daniel M.</figcaption>
         </figure>
